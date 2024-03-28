@@ -439,25 +439,54 @@ void Foam::LocalInteraction<CloudType>::info(Ostream& os)
     Pstream::listCombineGather(mps, plusEqOp<scalar>());
     mps = mps + mps0;
 
-    for (label patchi = 0; patchi < nPatches; ++ patchi)
-    {
-        if
-        (
-            patchInteractionTypes_[patchi]
-         != PatchInteractionModel<CloudType>::itNone
-        )
-        {
-            os  << "    Parcel fate (number, mass)      : patch "
-                << this->owner().mesh().boundaryMesh()[patchi].name() << nl
-                << "      - escape                      = " << npe[patchi]
-                << ", " << mpe[patchi] << nl
-                << "      - stick                       = " << nps[patchi]
-                << ", " << mps[patchi] << nl;
-        }
-    }
+    // This will write specific patches
+    // for (label patchi = 0; patchi < nPatches; ++ patchi)
+    // {
+    //     if
+    //     (
+    //         patchInteractionTypes_[patchi]
+    //      != PatchInteractionModel<CloudType>::itNone
+    //     )
+    //     {
+    //         os  << "    Parcel fate (number, mass)      : patch "
+    //             << this->owner().mesh().boundaryMesh()[patchi].name() << nl
+    //             << "      - escape                      = " << npe[patchi]
+    //             << ", " << mpe[patchi] << nl
+    //             << "      - stick                       = " << nps[patchi]
+    //             << ", " << mps[patchi] << nl;
+    //     }
+    // }
+
+    // forAll(patchData_, i)
+    // {
+    //     os  << "    Parcel fate (number, mass)      : patch "
+    //         <<  patchData_[i].patchName() << nl
+    //         << "      - escape                      = " << npe[i]
+    //         << ", " << mpe[i] << nl
+    //         << "      - stick                       = " << nps[i]
+    //         << ", " << mps[i] << nl;
+    // }
 
     if (this->writeTime())
     {
+        // Move write to writeTime() to reduce the output size
+        for (label patchi = 0; patchi < nPatches; ++ patchi)
+        {
+            if
+            (
+                patchInteractionTypes_[patchi]
+            != PatchInteractionModel<CloudType>::itNone
+            )
+            {
+                os  << "    Parcel fate (number, mass)      : patch "
+                    << this->owner().mesh().boundaryMesh()[patchi].name() << nl
+                    << "      - escape                      = " << npe[patchi]
+                    << ", " << mpe[patchi] << nl
+                    << "      - stick                       = " << nps[patchi]
+                    << ", " << mps[patchi] << nl;
+            }
+        }
+
         this->setModelProperty("nEscape", npe);
         nEscape_ = 0;
 
