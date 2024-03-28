@@ -30,6 +30,7 @@ License
 inline Foam::scalar Foam::Function1s::fullyDevelopedBL::value(const scalar t) const
 {
     return 2*(1 - sqr(1 - mag(t)));
+    //return t*(2 - t);
 }
 
 

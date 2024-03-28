@@ -75,47 +75,52 @@ void Foam::flowRateInletOutletVelocityFvPatchVectorField::updateValues
     const scalarField profile(this->profile());
 
     // Current running time
-    //const scalar t = db().time().userTimeValue();
+    const scalar t = db().time().userTimeValue();
 
     // Input flow rate satisfying specific BCs
-    const scalar inputFlowRate = flowRate_->value(db().time().userTimeValue());
+    const scalar inputFlowRate = flowRate_->value(t);
 
     const scalar flowRate = inputFlowRate;
 
     const scalar avgU =
-      -(flowRate)/gSum(alpha*rho*profile*patch().magSf());
+      -(scale*flowRate)/gSum(alpha*rho*patch().magSf());
 
     //Info << patch().name() << " avgU "  << avgU << endl;
     //Info << patch().name() << " area "  << gSum(alpha*rho*patch().magSf()) << endl;
     //Info << patch().name() << "scale " << scale << endl;
 
     //Normal vector to patch
-    
     const vectorField n(patch().nf());
 
     vectorField Up(avgU*profile*n);
 
     scalarField nUp(n & Up);
 
-    const scalar estimatedFlowRate = gSum(rho*(this->patch().magSf()*nUp));
+    const scalar estimatedFlowRate = gSum(rho*(patch().magSf()*nUp));
 
     const scalar ratio = mag(estimatedFlowRate)/mag(flowRate);
+
     if (ratio > 0.5)
     {
-        Info << "Patch " << patch().name() << endl;
-        Info << "   estimatedFlowRate/flowRate = " << ratio << endl;
-        Info << "   Correcting velocity " << endl; 
+        // Info << "Patch " << patch().name() << endl;
+        // Info << "   estimatedFlowRate/flowRate = " << ratio << endl; // = 1 (Hung test 240328)
+        // Info << "   Correcting velocity " << endl;
         nUp *= (mag(flowRate)/mag(estimatedFlowRate));
     }
     else
     {
-        Info << "Patch " << patch().name() << endl;
-        Info << "   estimatedFlowRate/flowRate = " << ratio << endl;
-        Info << "   Correcting velocity " << endl; 
+        // Info << "Patch " << patch().name() << endl;
+        // Info << "   estimatedFlowRate/flowRate = " << ratio << endl;
+        // Info << "   Correcting velocity " << endl; 
         nUp += ((flowRate - estimatedFlowRate)/gSum(rho*patch().magSf()));
     }
 
     Up = nUp*n;
+
+    // const scalar finalFlowRate = gSum(rho*(patch().magSf()*(n & Up)));
+
+    // Info << " finalFlowRate " << finalFlowRate << 
+    //         " inputFlowRate " << inputFlowRate << endl;
 
     operator==(Up);
 }
