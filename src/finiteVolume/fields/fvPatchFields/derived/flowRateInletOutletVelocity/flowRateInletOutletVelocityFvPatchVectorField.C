@@ -83,12 +83,12 @@ void Foam::flowRateInletOutletVelocityFvPatchVectorField::updateValues
     const scalar flowRate = inputFlowRate;
 
     const scalar avgU =
-      -(scale*flowRate)/gSum(alpha*rho*patch().magSf());
+      (scale*flowRate)/gSum(alpha*rho*patch().magSf());
 
     //Info << patch().name() << " avgU "  << avgU << endl;
     //Info << patch().name() << " area "  << gSum(alpha*rho*patch().magSf()) << endl;
     //Info << patch().name() << "scale " << scale << endl;
-
+    
     //Normal vector to patch
     const vectorField n(patch().nf());
 
@@ -96,7 +96,7 @@ void Foam::flowRateInletOutletVelocityFvPatchVectorField::updateValues
 
     scalarField nUp(n & Up);
 
-    const scalar estimatedFlowRate = gSum(rho*(patch().magSf()*nUp));
+    const scalar estimatedFlowRate = gSum(rho*(this->patch().magSf()*nUp));
 
     const scalar ratio = mag(estimatedFlowRate)/mag(flowRate);
 
@@ -117,10 +117,10 @@ void Foam::flowRateInletOutletVelocityFvPatchVectorField::updateValues
 
     Up = nUp*n;
 
-    // const scalar finalFlowRate = gSum(rho*(patch().magSf()*(n & Up)));
+    //const scalar finalFlowRate = gSum(rho*(patch().magSf()*(n & Up)));
 
-    // Info << " finalFlowRate " << finalFlowRate << 
-    //         " inputFlowRate " << inputFlowRate << endl;
+    //Info << " finalFlowRate " << finalFlowRate << 
+    //        " inputFlowRate " << inputFlowRate << endl;
 
     operator==(Up);
 }

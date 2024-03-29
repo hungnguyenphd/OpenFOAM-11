@@ -29,7 +29,7 @@ License
 
 inline Foam::scalar Foam::Function1s::uniformBL::value(const scalar t) const
 {
-    return 1e0;
+    return 1.0;
 }
 
 

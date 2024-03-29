@@ -123,6 +123,7 @@ int main(int argc, char *argv[])
 
     while (pimple.run(runTime))
     {
+        // Changes the mesh topology and maps between meshes
         solver.preSolve();
 
         // Adjust the time-step according to the solver maxDeltaT
@@ -144,6 +145,7 @@ int main(int argc, char *argv[])
             solver.postCorrector();
         }
 
+        // Cleans up, e.g. clearing temporary data
         solver.postSolve();
 
         runTime.write();
