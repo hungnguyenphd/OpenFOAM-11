@@ -109,6 +109,9 @@ makeRASModel(SSG);
 #include "Smagorinsky.H"
 makeLESModel(Smagorinsky);
 
+#include "Vreman.H"
+makeLESModel(Vreman);
+
 #include "WALE.H"
 makeLESModel(WALE);
 
