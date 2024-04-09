@@ -68,6 +68,7 @@ bool Foam::functionEntries::includeFvModelEntry::execute
         fNameArgs,
         parentDict,
         fvModelDictPath,
+        "system",
         {"file", is.name() + " at line " + Foam::name(is.lineNumber())}
     );
 }

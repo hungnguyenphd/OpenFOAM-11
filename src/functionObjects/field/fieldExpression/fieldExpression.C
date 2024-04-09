@@ -58,7 +58,9 @@ Foam::functionObjects::fieldExpression::fieldExpression
         ? word(functionName + '(' + fieldName_ + ')')
         : functionName
     )
-{}
+{
+    read(dict);
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
